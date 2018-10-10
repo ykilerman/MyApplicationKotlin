@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff0000</color>
+    <color name="colorPrimaryTrans">#20ff0000</color>
+    <color name="colorPrimaryDark">#c20000</color>
+    <color name="colorAccent">#e51b1b</color>
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorButton">#ba0700</color>
+    <color name="colorLink">#3334ba</color>
+    <color name="bgBadge">#010146</color>
+    <color name="white">#fff</color>
+    <color name="grey">#b9b5b5</color>
+    <color name="green">#009900</color>
+    <color name="MerahPudar">#e64542</color>
+    <color name="bgWhite">#eeeeee</color>
+    <color name="blackOpacity">#20000000</color>
+    <color name="greyOpacity">#20b9b5b5</color>
+</resources>
