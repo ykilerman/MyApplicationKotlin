@@ -10,7 +10,7 @@ import java.io.IOException
 class ApiClient {
     companion object {
         fun getClient() : Retrofit {
-            val BASE_URL = "http://172.168.100.58:8211/lupirka/api/v1/"
+            val BASE_URL = "http://103.30.123.15:8211/lupirka/api/v1/"
             val httpClient = OkHttpClient.Builder()
             httpClient.addInterceptor(object : Interceptor {
                 @Throws(IOException::class)

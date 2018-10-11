@@ -37,64 +37,47 @@ class MainActivity : AppCompatActivity() {
         rvMovies.layoutManager = GridLayoutManager(applicationContext, 2)
         val header = getString(R.string.api_key)
 
-        val BASE_URL = "http://172.168.2.36/tes/"
-        val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor(object : Interceptor {
-            @Throws(IOException::class)
-            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                val original = chain.request()
 
-                // Request customization: add request headers
-                val requestBuilder = original.newBuilder()
-                        .header("Authorization", "auth-value") // <-- this is the important line
-
-                val request = requestBuilder.build()
-                return chain.proceed(request)
-            }
-        })
-
-        val client = httpClient.build()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-
+        val retrofit= ApiClient.getClient()
         val apiInterface = retrofit.create(ApiInterface::class.java!!)
-//        getEvent(apiInterface, header)
+        getEvent(apiInterface, header)
 
+    }
+
+
+    fun getEvent(apiInterface: ApiInterface, header : String)  {
         val paramObject = JSONObject()
         try {
-            paramObject.put("offset", 0)
-            paramObject.put("limit", 100)
+            paramObject.put("offset", "0")
+            paramObject.put("limit", "100")
             paramObject.put("tipe", "")
 
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        System.out.println("VALUENYA : "+paramObject.toString());
+        System.out.println("VALUENYA : "+paramObject.toString())
 
-        var movieResponse : MovieResponse? = null
         val call : Call<MovieResponse> = apiInterface.getListEvent(paramObject.toString(),header)
         call.enqueue(object : Callback<MovieResponse> {
             override fun onFailure(call: Call<MovieResponse>?, t: Throwable?) {
-                Log.d("$TAG", "Gagal Fetch Popular Movie")
-                System.out.println("VALUENYA ERROR : "+t.toString());
+                System.out.println("VALUENYA ERROR : "+t.toString())
             }
 
             override fun onResponse(call: Call<MovieResponse>?, response: Response<MovieResponse>?) {
-                movies= response!!.body()!!.data.list_event!!;
-                rvMovies.adapter = MovieAdapter(movies,applicationContext)
-                System.out.println("VALUENYA RESPON : "+response!!.body()!!.message);
-                Toast.makeText(applicationContext,response!!.body()!!.message,Toast.LENGTH_SHORT)
+                if (response!!.body()!!.status.equals("success")){
+                    movies= response!!.body()!!.data.list_event!!
+                    if (movies.isNotEmpty()){
+                        rvMovies.adapter = MovieAdapter(movies,applicationContext)
+                        System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+                    }
+                    System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+                }else{
+                    Toast.makeText(applicationContext,response!!.body()!!.message,Toast.LENGTH_SHORT).show()
+                    System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+                }
+
+
             }
         })
-    }
-
-
-    fun getEvent(apiInterface: ApiInterface, apiKey : String)  {
-
     }
 }

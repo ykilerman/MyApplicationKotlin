@@ -9,7 +9,11 @@ import retrofit2.http.*
 interface ApiInterface {
 
     @Headers("Content-Type: application/json")
-    @POST("ada.php")
+//    @Headers(
+//            "Accept: application/json",
+//            "Content-type:application/json"
+//    )
+    @POST("get_listevent")
     fun getListEvent(@Body body: String, @Header("Authorization") authorization: String): Call<MovieResponse>
 
 
