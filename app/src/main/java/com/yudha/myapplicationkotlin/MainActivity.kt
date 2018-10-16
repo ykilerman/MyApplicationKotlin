@@ -3,29 +3,22 @@ package com.yudha.myapplicationkotlin
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.yudha.myapplicationkotlin.Adapter.MovieAdapter
 import com.yudha.myapplicationkotlin.Data.Movie
 import com.yudha.myapplicationkotlin.Data.MovieResponse
 import com.yudha.myapplicationkotlin.Services.ApiClient
 import com.yudha.myapplicationkotlin.Services.ApiInterface
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Interceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import org.json.JSONException
 import org.json.JSONObject
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Retrofit
-import okhttp3.OkHttpClient
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
+
     private val TAG : String = MainActivity::class.java.canonicalName
     private lateinit var movies : List<Movie>
 
@@ -34,12 +27,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        rvMovies.layoutManager = GridLayoutManager(applicationContext, 2)
         val header = getString(R.string.api_key)
-
-
         val retrofit= ApiClient.getClient()
-        val apiInterface = retrofit.create(ApiInterface::class.java!!)
+        val apiInterface = retrofit.create(ApiInterface::class.java)
         getEvent(apiInterface, header)
 
     }
@@ -65,15 +55,30 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<MovieResponse>?, response: Response<MovieResponse>?) {
                 if (response!!.body()!!.status.equals("success")){
-                    movies= response!!.body()!!.data.list_event!!
+                    movies= response.body()!!.data.list_event!!
                     if (movies.isNotEmpty()){
-                        rvMovies.adapter = MovieAdapter(movies,applicationContext)
-                        System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+//                        rvMovies.adapter = MovieAdapter(movies,applicationContext)
+//                        val movieAdapter:MovieAdapter= MovieAdapter(movies){
+//
+//                        }
+//                        rvMovies.adapter=movieAdapter
+
+
+                        val adapter = MovieAdapter(movies) { i: Movie ->
+                            Toast.makeText(applicationContext,i.title,Toast.LENGTH_SHORT).show()
+                        }
+//                        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+                        rvMovies.layoutManager = GridLayoutManager(applicationContext, 2)
+                        rvMovies.adapter = adapter
+
+//                        rvMovies.setOn
+                        System.out.println("VALUENYA RESPON : "+response.body()!!.message)
                     }
-                    System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+                    System.out.println("VALUENYA RESPON : "+response.body()!!.message)
                 }else{
-                    Toast.makeText(applicationContext,response!!.body()!!.message,Toast.LENGTH_SHORT).show()
-                    System.out.println("VALUENYA RESPON : "+response!!.body()!!.message)
+                    Toast.makeText(applicationContext,response.body()!!.message,Toast.LENGTH_SHORT).show()
+                    System.out.println("VALUENYA RESPON : "+response.body()!!.message)
                 }
 
 
